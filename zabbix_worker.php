@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Zabbix Worker
  * Description:       Provide statistics for zabbix
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Uwe Jacobs
  * Requires at least: 6.0
  * Tested up to:      6.1.1
@@ -44,26 +44,30 @@ function zw_internal_query_vars( $query_vars ){
 
 add_action( 'parse_request', 'zw_internal_rewrites_parse_request' );
 function zw_internal_rewrites_parse_request( &$wp ) {
+    $error = false;
 
     if (!array_key_exists( 'zabbix-api', $wp->query_vars ) ) {
+        $error = true;
         return;
     }
 
-    $error = false;
+    // generate security key
+    $key = get_option("zabbix_worker_key");
+    if (empty($key)) {
+        $key = zw_generate_guidv4();
+        add_option("zabbix_worker_key", $key);
+    }
 
     // security check validation
-    $str = print_r($_GET,1);
+    if (empty($_GET["token"]) || $_GET["token"] !== $key) {
+        $error = true;
+        return;
+    }
 
-    $stats = array (
-        'no_pages' => 0,
-        'no_posts' => 0,
-        'users' => 0
-    );
-    
-    $xxx = new zw_WordPress_Interna();
+    $wp_stats = new zw_WordPress_Interna();
 
     if (!$error) {
-        $result = array('status' => 0, 'message' => $str, 'data' => $stats, 'wordpress' => $xxx->get_data());
+        $result = array('status' => 0, 'message' => 'Ok', 'wordpress' => $wp_stats->get_data());
         $output = json_encode(array('result' => $result));
     }
     else {
@@ -73,4 +77,16 @@ function zw_internal_rewrites_parse_request( &$wp ) {
 
     echo $output;
     die();
+}
+
+function zw_generate_guidv4() {
+    // Generate 16 bytes (128 bits) of random data
+    $data = random_bytes(16);
+    assert(strlen($data) == 16);
+
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+    // Output the 36 character UUID.
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
