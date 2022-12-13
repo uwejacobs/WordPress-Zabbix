@@ -8,6 +8,7 @@ class zw_WordPress_Interna {
             'plugins'        => $this->zw_get_plugin_info(),
             'pages'          => $this->zw_get_page_info(),
             'posts'          => $this->zw_get_post_info(),
+            'themes'         => $this->zw_get_theme_info(),
         );
         
         return $interna;
@@ -128,6 +129,22 @@ class zw_WordPress_Interna {
         return $pages;
     }
     
+    private function zw_get_theme_info() {
+        $all_themes = wp_get_themes();
+
+        $themes = [];
+        foreach ( $all_themes as $theme ) {
+            $is_out_of_date = !empty($theme->update);
+            $themes[] = array(
+                'name'           => $theme->get('Name'),
+                'version'        => $theme->get('Version'),
+                'template'       => $theme->get('Template'),
+                'is_out_of_date' => $is_out_of_date,
+            );
+        }
+
+        return $themes;
+    }
     
     
     
