@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Zabbix Worker
  * Description:       Provide statistics for zabbix
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Uwe Jacobs
  * Requires at least: 6.0
  * Tested up to:      6.1.1
@@ -30,6 +30,45 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 require_once(dirname(__FILE__).'/classes/wordpress.php');
 
+add_action("admin_menu", "zabbix_worker_options_submenu");
+function zabbix_worker_options_submenu() {
+  add_submenu_page(
+        'options-general.php',
+        'Zabbix Worker',
+        'Zabbix Worker',
+        'administrator',
+        'zabbix-worker-options',
+        'zabbix_worker_settings_page' );
+}
+
+function zabbix_worker_settings_page() {
+	if (!is_admin() || !current_user_can('manage_options')) {
+		return;
+	}
+
+    $key = get_option("zabbix_worker_key");
+?><h1>Zabbix Worker</h1>
+<form method="post">
+    <label for="zw_key_option" style="padding-right:10px;font-size:125%">Zabbix Worker Key:</label>
+    <input readonly id="zw_key_option" size="36" placeholder="Regenerate the Access key" type="text" value="<?php esc_html_E($key) ?>">
+    <input type="hidden" name="zw_action" value="zw_regenerate_key" />
+    <?php wp_nonce_field( 'zw_regenerate_key_nonce', 'zw_regenerate_key_nonce' ); ?>
+    <?php submit_button( esc_html__( 'Regenerate Key', 'zabbix_worker' ), 'secondary', 'submit', false ); ?>
+</form><?php
+}
+
+add_action( 'admin_init', 'zw_regenerate_key' );
+function zw_regenerate_key() {
+    if( empty( $_POST['zw_action'] ) || 'zw_regenerate_key' != sanitize_text_field($_POST['zw_action']) )
+        return;
+    if( ! wp_verify_nonce( sanitize_text_field($_POST['zw_regenerate_key_nonce']), 'zw_regenerate_key_nonce' ) )
+        return;
+    if (!current_user_can('manage_options'))
+        return;
+
+    $key = zw_generate_guidv4();
+    update_option("zabbix_worker_key", $key);
+}
 
 add_action( 'wp_loaded', 'zw_internal_rewrites' );
 function zw_internal_rewrites(){
@@ -55,7 +94,7 @@ function zw_internal_rewrites_parse_request( &$wp ) {
     $key = get_option("zabbix_worker_key");
     if (empty($key)) {
         $key = zw_generate_guidv4();
-        add_option("zabbix_worker_key", $key);
+        update_option("zabbix_worker_key", $key);
     }
 
     // security check validation
@@ -88,5 +127,5 @@ function zw_generate_guidv4() {
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
 
     // Output the 36 character UUID.
-    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    return strtoupper(vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)));
 }
