@@ -9,6 +9,7 @@ class zw_WordPress_Interna {
             'pages'          => $this->zw_get_page_info(),
             'posts'          => $this->zw_get_post_info(),
             'themes'         => $this->zw_get_theme_info(),
+            'users'          => $this->zw_get_user_info(),
         );
         
         return $interna;
@@ -147,7 +148,19 @@ class zw_WordPress_Interna {
     }
     
     
-    
-    
-    
+    private function zw_get_user_info() {
+        $all_users = get_users();
+
+        $users = [];
+        foreach ($all_users as $user) {
+            $is_admin = user_can($user->ID, 'administrator');
+            $users[] = array(
+                'name'           => $user->display_name,
+                'email'          => $user->user_email,
+                'administrator'  => $is_admin,
+            );
+        }
+        
+        return $users;
+    }
 }

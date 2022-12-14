@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Zabbix Worker
  * Description:       Provide statistics for zabbix
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            Uwe Jacobs
  * Requires at least: 6.0
  * Tested up to:      6.1.1
