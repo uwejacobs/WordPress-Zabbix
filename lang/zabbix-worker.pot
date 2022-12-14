@@ -1,0 +1,31 @@
+# Copyright (C) 2022 Uwe Jacobs
+# This file is distributed under the same license as the Zabbix Worker plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Zabbix Worker 1.0.5\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/zabbix_worker\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-12-14T16:25:40-05:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: zabbix_worker\n"
+
+#. Plugin Name of the plugin
+msgid "Zabbix Worker"
+msgstr ""
+
+#. Description of the plugin
+msgid "Provide statistics for zabbix"
+msgstr ""
+
+#. Author of the plugin
+msgid "Uwe Jacobs"
+msgstr ""
+
+#: zabbix_worker.php:56
+msgid "Regenerate Key"
+msgstr ""
