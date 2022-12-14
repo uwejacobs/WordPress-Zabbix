@@ -10,6 +10,7 @@ class zw_WordPress_Interna {
             'posts'          => $this->zw_get_post_info(),
             'themes'         => $this->zw_get_theme_info(),
             'users'          => $this->zw_get_user_info(),
+            'upload_size'    => $this->zw_get_upload_size(),
         );
         
         return $interna;
@@ -162,5 +163,28 @@ class zw_WordPress_Interna {
         }
         
         return $users;
+    }
+    
+    private function zw_get_upload_size() {
+        $upload = wp_get_upload_dir();
+
+        return $this->zw_folder_size($upload["path"]);
+    }
+    
+    private function zw_folder_size($dir) {
+        $size = 0;
+        $count = 0;
+        $dir_array = array_slice(scandir($dir), 2); // omit . and ..
+        foreach ($dir_array as $filename) {
+            if (is_dir($dir . "/" . $filename)) {
+                $new_foldersize = $this->zw_folder_size($dir . "/" . $filename);
+                $size += $new_foldersize;
+            } else if (is_file($dir . "/" . $filename)){
+                $size += filesize($dir . "/" . $filename);
+                ++$count;
+            }
+        }
+
+        return $size;
     }
 }

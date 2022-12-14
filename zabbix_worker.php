@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Zabbix Worker
  * Description:       Provide statistics for zabbix
- * Version:           1.0.4
+ * Version:           1.0.5
  * Author:            Uwe Jacobs
  * Requires at least: 6.0
  * Tested up to:      6.1.1
@@ -116,6 +116,11 @@ function zw_internal_rewrites_parse_request( &$wp ) {
 
     echo $output;
     die();
+}
+
+add_action('init', 'zw_textdomain', 10);
+function zw_textdomain() {
+	load_plugin_textdomain( 'zabbix_worker', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 }
 
 function zw_generate_guidv4() {
