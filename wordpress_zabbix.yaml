@@ -1,0 +1,755 @@
+zabbix_export:
+  version: '6.2'
+  date: '2022-12-14T18:40:04Z'
+  template_groups:
+    -
+      uuid: 0e85f601c04d44aab171b49f61c986a9
+      name: Templates/Custom
+  templates:
+    -
+      uuid: 5e17114954284fc3aa5a1bf985ccaef1
+      template: 'Template WordPress'
+      name: 'Template WordPress'
+      description: 'Current version: https://github.com/uwejacobs/zabbix_worker'
+      groups:
+        -
+          name: Templates/Custom
+      items:
+        -
+          uuid: aee22c90bec442f7949e369ea6603561
+          name: 'Number of Active Plugins'
+          type: DEPENDENT
+          key: wordpress.no_active_plugins
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.plugins[?(@.active == ''true'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: a3ebfada9edd4df4b50822ad9c91b480
+          name: 'Number of Inactive Plugins'
+          type: DEPENDENT
+          key: wordpress.no_inactive_plugins
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.plugins[?(@.active != ''true'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: bc429a36140649a69611b7e9efe4c322
+          name: 'Number of Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.pages.length()
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: fcca81d111974210b8a51734ea3591db
+          name: 'Number of Auto-Draft Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_autodraft
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''auto-draft'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 4f819cce7f704102947dd516bcbc92b6
+          name: 'Number of Custom Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_custom
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''custom_status'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: ba9fe3156a424dfda29774cd5cd90ff1
+          name: 'Number of Draft Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_draft
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''draft'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 90480352e6bd4a6d95a719f4e59319d3
+          name: 'Number of Future Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_future
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''future'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 349d32cdc675410d8fedb668c9b76d29
+          name: 'Number of Inherit Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_inherit
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''inherit'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 181aeaf737c44424ba84c5c893a39796
+          name: 'Number of Pending Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_pending
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''pending'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: c7e20e4fa385474fafbb898fc5218f87
+          name: 'Number of Private Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_private
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''private'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 9de6ad45e3f94e32a5da4c61d6e60f7b
+          name: 'Number of Published Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_published
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''publish'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: b94b09bd346f48b0921568f7a342bf21
+          name: 'Number of Deleted Pages'
+          type: DEPENDENT
+          key: wordpress.no_pages_trash
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[?(@.status == ''trash'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 8c9cffe38f8b41a1b5827f9007770142
+          name: 'Number of Page Authors'
+          type: DEPENDENT
+          key: wordpress.no_page_authors
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.pages[:].author'
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  const arr = value.split(', ').sort();
+                  function uniqSort (arr) {
+                     const map = {};
+                     const res = [];
+                     for (i = 0; i < arr.length; i++) {
+                        if (!map[arr[i]]) {
+                           map[arr[i]] = true;
+                           res.push(arr[i]);
+                        };
+                     };
+                     return res.sort();
+                  };
+                  
+                  return uniqSort(arr).length;
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 06d717dd72a84220b390417f771eeb52
+          name: 'Number of Plugins'
+          type: DEPENDENT
+          key: wordpress.no_plugins
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.plugins.length()
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: aa2c31f0ce034619bedfc8da54d0c629
+          name: 'Number of Out-of-date Plugins'
+          type: DEPENDENT
+          key: wordpress.no_plugins_out_of_date
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.plugins[?(@.updateVersion!= '''')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+          triggers:
+            -
+              uuid: cc94c7ef1f1d4f69a10b2323ca2f64ad
+              expression: 'last(/Template WordPress/wordpress.no_plugins_out_of_date)>0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Template WordPress/wordpress.no_plugins_out_of_date)=0'
+              name: 'Plugins Out-of-Date'
+              priority: AVERAGE
+        -
+          uuid: 8d565ce840f841e7a66a952aec9ea2ed
+          name: 'Number of Up-to-date Plugins'
+          type: DEPENDENT
+          key: wordpress.no_plugins_up_to_date
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.plugins[?(@.updateVersion== '''')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 66afb0995b22440c921ab60342dbb262
+          name: 'Number of Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.posts.length()
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: ec27a5f5f263416e8ef0e70849e92637
+          name: 'Number of Auto-Draft Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_autodraft
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''auto-draft'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: db8933e90685466fade0382585d903f7
+          name: 'Number of Custom Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_custom
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''custom_status'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 8b1676b9a50846a5aaf83a78df389c4e
+          name: 'Number of Draft Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_draft
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''draft'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: badf4d90eb5d46d483140a30ba3d5be2
+          name: 'Number of Future Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_future
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''future'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 7f94ec168ea446fdad2c049f792f81be
+          name: 'Number of Inherit Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_inherit
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''inherit'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 82c137fc652c4c7faa4421180ac9ae73
+          name: 'Number of Pending Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_pending
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''pending'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 8a5b89f0df7448c082b98e6d2dc90849
+          name: 'Number of Private Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_private
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''private'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 54c0fc90ab6a48a6b97bc80d9112b79b
+          name: 'Number of Published Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_published
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''publish'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: ed0de2eaf69040d58fa7ba85b6469733
+          name: 'Number of Deleted Posts'
+          type: DEPENDENT
+          key: wordpress.no_posts_trash
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[?(@.status == ''trash'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: bdc85bec4c544c868d37503f5ec4e7cf
+          name: 'Number of Post Authors'
+          type: DEPENDENT
+          key: wordpress.no_post_authors
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.posts[:].author'
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  const arr = value.split(', ').sort();
+                  function uniqSort (arr) {
+                     const map = {};
+                     const res = [];
+                     for (i = 0; i < arr.length; i++) {
+                        if (!map[arr[i]]) {
+                           map[arr[i]] = true;
+                           res.push(arr[i]);
+                        };
+                     };
+                     return res.sort();
+                  };
+                  
+                  return uniqSort(arr).length;
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: a3c7c89f3dc94d17b2ce1ce724648fff
+          name: 'Number of Themes'
+          type: DEPENDENT
+          key: wordpress.no_themes
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.themes.length()
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 77985877192f4e6baaf7e5a755da7602
+          name: 'Number of Child Themes'
+          type: DEPENDENT
+          key: wordpress.no_themes_child
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.themes[?(@.template!= '''')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: d3f7ad78c2754c7aa934e8bb92c8d651
+          name: 'Number of Master Themes'
+          type: DEPENDENT
+          key: wordpress.no_themes_master
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.themes[?(@.template== '''')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 4beab5dfdd174672ba4d3caa27394eb4
+          name: 'Number of Out-of-date Themes'
+          type: DEPENDENT
+          key: wordpress.no_themes_out_of_date
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.themes[?(@.is_out_of_date== ''true'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+          triggers:
+            -
+              uuid: f75b8d7b1d0d4791bc9099778bc85b4c
+              expression: 'last(/Template WordPress/wordpress.no_themes_out_of_date)>0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Template WordPress/wordpress.no_themes_out_of_date)=0'
+              name: 'Themes Out-of-Date'
+              priority: AVERAGE
+        -
+          uuid: 32f789d08cae48f3a19a8c65c593972a
+          name: 'Number of Up-to-date Themes'
+          type: DEPENDENT
+          key: wordpress.no_themes_up_to_date
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.themes[?(@.is_out_of_date== ''false'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: a04d98fbe522439db39191fb575e7723
+          name: 'Number of Users'
+          type: DEPENDENT
+          key: wordpress.no_users
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.users.length()
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 5d7cc077a0784d1c8fe68d4f4d501013
+          name: 'Number of Admin Users'
+          type: DEPENDENT
+          key: wordpress.no_users_admin
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.users[?(@.administrator == ''true'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 159d537feb8749e98fdff48e54a34e03
+          name: 'Number of Non-Admin Users'
+          type: DEPENDENT
+          key: wordpress.no_users_non_admin
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.result.wordpress.users[?(@.administrator == ''false'')].length()'
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: 1c5544778810477495e998a63162ed62
+          name: 'WP {$WORDPRESS_NAME} Zabbix Worker'
+          type: HTTP_AGENT
+          key: wordpress.response.raw
+          history: '0'
+          trends: '0'
+          value_type: TEXT
+          timeout: 60s
+          url: '{$WORDPRESS_URL}/zabbix-api'
+          query_fields:
+            -
+              name: token
+              value: '{$WORDPRESS_CONNECTION_KEY}'
+          tags:
+            -
+              tag: Application
+              value: 'Zabbix raw items'
+        -
+          uuid: a3be6116fb084d4ab1bc1eac7babfe0e
+          name: Status
+          type: DEPENDENT
+          key: wordpress.success
+          delay: '0'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.status
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+        -
+          uuid: c5cdd92fdaf541a597b623e05cddd38a
+          name: 'WordPress Update Version'
+          type: DEPENDENT
+          key: wordpress.update_version
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.update_version
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+          triggers:
+            -
+              uuid: 40dc6a575a8845159b74fe9743fe9801
+              expression: 'last(/Template WordPress/wordpress.update_version)<>""'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Template WordPress/wordpress.update_version)=""'
+              name: 'WordPress Update Available'
+              priority: HIGH
+        -
+          uuid: c4642c2b51214ecc9d867e58f777ccf6
+          name: 'WordPress Version'
+          type: DEPENDENT
+          key: wordpress.version
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.result.wordpress.version
+          master_item:
+            key: wordpress.response.raw
+          tags:
+            -
+              tag: Application
+              value: wordpress
+      macros:
+        -
+          macro: '{$WORDPRESS_CONNECTION_KEY}'
+          description: 'Fill this on the host level, not the template level'
+        -
+          macro: '{$WORDPRESS_NAME}'
+          description: 'Fill this on the host level, not the template level'
+        -
+          macro: '{$WORDPRESS_URL}'
+          description: 'Fill this on the host level, not the template level'
