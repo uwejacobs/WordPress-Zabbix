@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Zabbix Worker
  * Description:       Provide statistics for zabbix
- * Version:           1.0.5
+ * Version:           1.0.6
  * Author:            Uwe Jacobs
  * Requires at least: 6.0
  * Tested up to:      6.1.1
@@ -29,6 +29,7 @@
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 require_once(dirname(__FILE__).'/classes/wordpress.php');
+require_once(dirname(__FILE__).'/classes/php.php');
 
 add_action("admin_menu", "zabbix_worker_options_submenu");
 function zabbix_worker_options_submenu() {
@@ -104,9 +105,10 @@ function zw_internal_rewrites_parse_request( &$wp ) {
     }
 
     $wp_stats = new zw_WordPress_Interna();
+    $php_stats = new zw_PHP_Interna();
 
     if (!$error) {
-        $result = array('status' => 0, 'message' => 'Ok', 'wordpress' => $wp_stats->get_data());
+        $result = array('status' => 0, 'message' => 'Ok', 'wordpress' => $wp_stats->get_data(), 'php' => $php_stats->get_data());
         $output = json_encode(array('result' => $result));
     }
     else {
