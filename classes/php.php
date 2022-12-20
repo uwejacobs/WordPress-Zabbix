@@ -10,12 +10,12 @@ class zw_PHP_Interna {
     }
     
     private function zw_get_php_version() {
-        $phpinfo = $this->phpinfo2array();
-error_log(print_r($phpinfo["phpinfo"]["version"],1));        
-        return $this->phpinfo2array();
+        $phpinfo["version"] = PHP_VERSION;
+
+        return $phpinfo;
     }
 
-    function phpinfo2array() {
+    private function phpinfo2array() {
         $entitiesToUtf8 = function($input) {
             // http://php.net/manual/en/function.html-entity-decode.php#104617
             return preg_replace_callback("/(&#[0-9]+;)/", function($m) { return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES"); }, $input);
@@ -67,4 +67,8 @@ error_log(print_r($phpinfo["phpinfo"]["version"],1));
         return $phpinfo;
     }
 
+
+
+
 }
+
