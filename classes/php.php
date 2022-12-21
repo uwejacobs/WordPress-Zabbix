@@ -10,7 +10,7 @@ class zw_PHP_Interna {
         $interna["short_tag"] = $this->php_short_tag();
         $interna["memory_limit"] = $this->php_check_limit();
         $interna["memory_usage"] = function_exists('memory_get_usage') ? memory_get_usage() : 0;
-        $interna["memory_usage_pct"] = (((int)$interna["memory_usage"] / (int)$interna["memory_limit"]) * 100);
+        $interna["memory_usage_pct"] = round(((int)$interna["memory_usage"] / (int)$interna["memory_limit"]) * 100, 2);
 
         return $interna;
     }

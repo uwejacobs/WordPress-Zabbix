@@ -167,9 +167,15 @@ class zw_WordPress_Interna {
     }
     
     private function zw_get_upload_size() {
-        $upload = wp_get_upload_dir();
+        $folder_size = get_transient('zw_wordpress_folder_size');
 
-        return $this->zw_folder_size($upload["path"]);
+        if ($folder_size === false) {
+            $upload = wp_get_upload_dir();
+            $folder_size = $this->zw_folder_size($upload["path"]);
+            set_transient('zw_wordpress_folder_size', $folder_size, DAY_IN_SECONDS);
+        }
+        
+        return $folder_size;
     }
     
     private function zw_folder_size($dir) {

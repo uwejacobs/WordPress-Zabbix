@@ -39,7 +39,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
             $total_ram_server = (is_numeric($this->check_total_ram()) ? (int) $this->check_total_ram() : 0);
             $free_ram_server = (is_numeric($this->check_free_ram()) ? (int) $this->check_free_ram() : 0);
             $used_ram_server = ($total_ram_server - $free_ram_server);
-            $ram_usage_pct = (($used_ram_server / $total_ram_server) * 100);
+            $ram_usage_pct = round(($used_ram_server / $total_ram_server) * 100, 2);
         
             $uptime = trim(shell_exec("cut -d. -f1 /proc/uptime"));
 
