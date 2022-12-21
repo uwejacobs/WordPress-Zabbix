@@ -2,73 +2,118 @@
 class zw_PHP_Interna {
 
     function get_data() {
-        $interna = /*array(*/
-            $this->zw_get_php_version()
-        /*)*/;
-        
+        $interna = [];
+        $interna["version"] = $this->zw_get_php_version();
+        $interna["max_upload_size"] = $this->php_max_upload_size();
+        $interna["max_post_size"] = $this->php_max_post_size();
+        $interna["max_execution_time"] = $this->php_max_execution_time();
+        $interna["short_tag"] = $this->php_short_tag();
+        $interna["memory_limit"] = $this->php_check_limit();
+        $interna["memory_usage"] = function_exists('memory_get_usage') ? memory_get_usage() : 0;
+        $interna["memory_usage_pct"] = (((int)$interna["memory_usage"] / (int)$interna["memory_limit"]) * 100);
+
         return $interna;
     }
     
     private function zw_get_php_version() {
-        $phpinfo["version"] = PHP_VERSION;
-
-        return $phpinfo;
+        return PHP_VERSION;
     }
 
-    private function phpinfo2array() {
-        $entitiesToUtf8 = function($input) {
-            // http://php.net/manual/en/function.html-entity-decode.php#104617
-            return preg_replace_callback("/(&#[0-9]+;)/", function($m) { return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES"); }, $input);
-        };
-        $plainText = function($input) use ($entitiesToUtf8) {
-            return trim(html_entity_decode($entitiesToUtf8(strip_tags($input))));
-        };
-        $titlePlainText = function($input) use ($plainText) {
-            return '# '.$plainText($input);
-        };
-       
-        ob_start();
-        phpinfo(-1);
-       
-        $phpinfo = array('phpinfo' => array());
+/*
+The following functions are taken from the plugin WP Server Stats and released under the same license.
 
-        // Strip everything after the <h1>Configuration</h1> tag (other h1's)
-        if (!preg_match('#(.*<h1[^>]*>\s*Configuration.*)<h1#s', ob_get_clean(), $matches)) {
-            return array();
-        }
-       
-        $input = $matches[1];
-        $matches = array();
+Original Plugin Name: WP Server Stats
+Original Plugin URI: https://wordpress.org/plugins/wp-server-stats/
+Original Description: Show up the memory limit and current memory usage in the dashboard and admin footer
+Original Author: Saumya Majumder, Acnam Infotech
+Original Author URI: https://acnam.com/
+Original Version: 1.7.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+*/
+    private function php_max_upload_size() {
+        $php_max_upload_size = get_transient('zw_php_max_upload_size');
 
-        if(preg_match_all(
-            '#(?:<h2.*?>(?:<a.*?>)?(.*?)(?:<\/a>)?<\/h2>)|'.
-            '(?:<tr.*?><t[hd].*?>(.*?)\s*</t[hd]>(?:<t[hd].*?>(.*?)\s*</t[hd]>(?:<t[hd].*?>(.*?)\s*</t[hd]>)?)?</tr>)#s',
-            $input,
-            $matches,
-            PREG_SET_ORDER
-        )) {
-            foreach ($matches as $match) {
-                $fn = strpos($match[0], '<th') === false ? $plainText : $titlePlainText;
-                if (strlen($match[1])) {
-                    $phpinfo[$match[1]] = array();
-                } elseif (isset($match[3])) {
-                    $keys1 = array_keys($phpinfo);
-                    $phpinfo[end($keys1)][$fn($match[2])] = isset($match[4]) ? array($fn($match[3]), $fn($match[4])) : $fn($match[3]);
-                } else {
-                    $keys1 = array_keys($phpinfo);
-                    $phpinfo[end($keys1)][] = $fn($match[2]);
-                }
-
+        if ($php_max_upload_size === false) {
+            if (ini_get('upload_max_filesize')) {
+                $php_max_upload_size = ini_get('upload_max_filesize');
+                $php_max_upload_size = $this->format_php_size($php_max_upload_size);
+                set_transient('zw_php_max_upload_size', $php_max_upload_size, DAY_IN_SECONDS);
+            } else {
+                $php_max_upload_size = -1;
             }
         }
 
-        $phpinfo["phpinfo"]["version"] = phpversion();
-
-        return $phpinfo;
+        return $php_max_upload_size;
     }
 
+    private function php_max_post_size() {
 
+        $php_max_post_size = get_transient('zw_php_max_post_size');
 
+        if ($php_max_post_size === false) {
+            if (ini_get('post_max_size')) {
+                $php_max_post_size = ini_get('post_max_size');
+                $php_max_post_size = $this->format_php_size($php_max_post_size);
+                set_transient('zw_php_max_post_size', $php_max_post_size, DAY_IN_SECONDS);
+            } else {
+                $php_max_post_size = -1;
+            }
+        }
+
+        return $php_max_post_size;
+    }
+
+    private function php_max_execution_time() {
+        if (ini_get('max_execution_time')) {
+            $max_execute = ini_get('max_execution_time');
+        } else {
+            $max_execute = -1;
+        }
+
+        return $max_execute;
+    }
+
+    private function php_short_tag() {
+        $short_tag = ini_get('short_open_tag') ? 'true' : 'false';
+
+        return $short_tag;
+    }
+
+    private function format_php_size($size) {
+        if (!is_numeric($size)) {
+            if (strpos($size, 'M') !== false) {
+                $size = intval($size) * 1024 * 1024;
+            } elseif (strpos($size, 'K') !== false) {
+                $size = intval($size) * 1024;
+            } elseif (strpos($size, 'G') !== false) {
+                $size = intval($size) * 1024 * 1024 * 1024;
+            }
+        }
+
+        return $size;
+    }
+
+    private function php_check_limit() {
+        $memory_limit = ini_get('memory_limit');
+        if (preg_match('/^(\d+)(.)$/', $memory_limit, $matches)) {
+            $memory_limit = $matches[1];
+            switch($matches[2]) {
+                case 'P':
+                    $memory_limit *= 1024;
+                case 'T':
+                    $memory_limit *= 1024;
+                case 'G':
+                    $memory_limit *= 1024;
+                case 'M':
+                    $memory_limit *= 1024;
+                case 'K':
+                    $memory_limit *= 1024;
+            }
+        }
+
+        return $memory_limit;
+    }
 
 }
 

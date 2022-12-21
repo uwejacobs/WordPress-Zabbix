@@ -11,6 +11,7 @@ class zw_WordPress_Interna {
             'themes'         => $this->zw_get_theme_info(),
             'users'          => $this->zw_get_user_info(),
             'upload_size'    => $this->zw_get_upload_size(),
+            'document_root'  => ABSPATH
         );
         
         return $interna;
